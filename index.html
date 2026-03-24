@@ -10,12 +10,10 @@
         .header-section { background: linear-gradient(135deg, #003366 0%, #00509d 100%); color: white; padding: 60px 20px; margin-bottom: 40px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
         .container { max-width: 1000px; }
         
-        /* 演示表格樣式 */
-        .demo-table { width: 100%; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 15px rgba(0,0,0,0.05); margin-bottom: 30px; }
+        .demo-table { width: 100%; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 15px rgba(0,0,0,0.05); margin-bottom: 30px; border-collapse: collapse; }
         .demo-table th { background-color: #f1f4f8; padding: 15px; text-align: center; border-bottom: 2px solid #dee2e6; }
         .demo-table td { padding: 20px; border-bottom: 1px solid #eee; vertical-align: middle; text-align: center; }
         
-        /* 圖片與影片統一寬度 */
         .spec-img, .video-container { width: 100%; max-width: 220px; margin: 0 auto 10px; display: block; }
         .spec-img { border-radius: 4px; border: 1px solid #ddd; cursor: zoom-in; transition: transform 0.2s; }
         .spec-img:hover { transform: scale(1.05); }
@@ -23,22 +21,45 @@
         video { width: 100%; height: auto; border-radius: 4px; border: 1px solid #ddd; background-color: #000; }
         audio { width: 100%; height: 35px; }
         
-        /* 主標題 (Simulation Result) */
         .scenario-title { border-left: 5px solid #00509d; padding-left: 15px; margin: 50px 0 25px; font-weight: bold; color: #003366; text-align: left; font-size: 1.75rem; }
         
-        /* 次標題 (Baselines & Metrics) */
         .sub-section-title { margin: 30px 0 15px; font-weight: bold; color: #555; text-align: left; font-size: 1.25rem; display: flex; align-items: center; }
         .sub-section-title::before { content: "•"; color: #00509d; margin-right: 10px; font-size: 1.5rem; }
 
         .method-label { font-size: 0.85rem; font-weight: 600; display: block; margin-top: 8px; color: #666; }
         .highlight { background-color: #fff9db; border: 1px solid #fab005 !important; }
 
-        /* 數據指標表格專用樣式 */
         .metrics-table { width: 100%; margin: 10px 0 50px; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
         .metrics-table th { background-color: #003366; color: white; padding: 12px; text-align: center; }
         .metrics-table td { padding: 12px; text-align: center; border-bottom: 1px solid #eee; }
         .metrics-table tr:nth-child(even) { background-color: #f8f9fa; }
         .best-value { font-weight: bold; color: #d9480f; }
+
+        footer { border-top: 1px solid #eee; padding: 30px 0; margin-top: 60px; color: #777; }
+
+        /* --- 手機版優化：核心代碼 --- */
+        @media (max-width: 768px) {
+            /* 讓表格單元格變成一列排兩個 */
+            .demo-table thead { display: none; } /* 隱藏標頭避免亂掉 */
+            .demo-table tbody tr { display: flex; flex-wrap: wrap; justify-content: center; }
+            .demo-table td { 
+                flex: 0 0 50%; /* 強制寬度為 50%，達成一列兩個 */
+                max-width: 50%;
+                padding: 10px 5px;
+                border-bottom: 1px solid #eee;
+            }
+            /* 在手機上加上標註，補足隱藏標頭後的語意 */
+            .demo-table td::before {
+                content: attr(data-label);
+                display: block;
+                font-size: 0.75rem;
+                font-weight: bold;
+                color: #00509d;
+                margin-bottom: 5px;
+                text-transform: uppercase;
+            }
+            .spec-img, .video-container { max-width: 100%; } /* 手機上讓圖大一點 */
+        }
     </style>
 </head>
 <body>
@@ -61,31 +82,30 @@
         <table class="demo-table">
             <thead>
                 <tr>
-                    <th style="width: 25%;">Visual Clue</th>
-                    <th style="width: 25%;">Noisy Mixture</th>
-                    <th style="width: 25%;">Clean Reference</th>
-                    <th style="width: 25%;" class="highlight">Proposed VI-NBFNet</th>
+                    <th>Visual Clue</th>
+                    <th>Noisy Mixture</th>
+                    <th>Clean Reference</th>
+                    <th class="highlight">Proposed VI-NBFNet</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td>
+                    <td data-label="Visual Clue">
                         <div class="video-container">
-                            <video controls muted autoplay loop playsinline>
+                            <video controls muted autoplay loop playsinline preload="auto">
                                 <source src="video/2_test.mp4" type="video/mp4">
                             </video>
                         </div>
-                        
                     </td>
-                    <td>
+                    <td data-label="Noisy Mixture">
                         <img src="img/noisy.png" class="spec-img" alt="Noisy">
                         <audio controls src="audio/noisy.wav"></audio>
                     </td>
-                    <td>
+                    <td data-label="Clean Reference">
                         <img src="img/clean.png" class="spec-img" alt="Clean">
                         <audio controls src="audio/clean.wav"></audio>
                     </td>
-                    <td class="highlight">
+                    <td data-label="Proposed VI-NBFNet" class="highlight">
                         <img src="img/VI_NBF.png" class="spec-img" alt="Proposed">
                         <audio controls src="audio/VI_NBF.wav"></audio>
                     </td>
@@ -99,30 +119,18 @@
         <table class="demo-table">
             <thead>
                 <tr>
-                    <th style="width: 25%;">VI-MSE (BF)</th>
-                    <th style="width: 25%;">VI-SA-BF</th>
-                    <th style="width: 25%;">VI-SSE</th>
-                    <th style="width: 25%;">VI-MSE (BF+PF)</th>
+                    <th>VI-MSE (BF)</th>
+                    <th>VI-SA-BF</th>
+                    <th>VI-SSE</th>
+                    <th>VI-MSE (BF+PF)</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td>
-                        <img src="img/VI_MSE_BF.png" class="spec-img" alt="VI_MSE_BF">
-                        <audio controls src="audio/VI_MSE_BF.wav"></audio>
-                    </td>
-                    <td>
-                        <img src="img/VI_SA_BF.png" class="spec-img" alt="VI_SA_BF">
-                        <audio controls src="audio/VI_SA_BF.wav"></audio>
-                    </td>
-                    <td>
-                        <img src="img/VI_SSE.png" class="spec-img" alt="VI_SSE">
-                        <audio controls src="audio/VI_SSE.wav"></audio>
-                    </td>
-                    <td>
-                        <img src="img/VI_MSE_PF.png" class="spec-img" alt="VI_MSE_PF">
-                        <audio controls src="audio/VI_MSE_PF.wav"></audio>
-                    </td>
+                    <td data-label="VI-MSE (BF)"><img src="img/VI_MSE_BF.png" class="spec-img"><audio controls src="audio/VI_MSE_BF.wav"></audio></td>
+                    <td data-label="VI-SA-BF"><img src="img/VI_SA_BF.png" class="spec-img"><audio controls src="audio/VI_SA_BF.wav"></audio></td>
+                    <td data-label="VI-SSE"><img src="img/VI_SSE.png" class="spec-img"><audio controls src="audio/VI_SSE.wav"></audio></td>
+                    <td data-label="VI-MSE (BF+PF)"><img src="img/VI_MSE_PF.png" class="spec-img"><audio controls src="audio/VI_MSE_PF.wav"></audio></td>
                 </tr>
             </tbody>
         </table>
@@ -158,40 +166,36 @@
         </table>
     </div>
 
-
-<div class="container">
-    
     <h2 class="scenario-title">Experiment Result</h2>
     
     <div class="table-responsive">
         <table class="demo-table">
             <thead>
                 <tr>
-                    <th style="width: 25%;">Visual Clue</th>
-                    <th style="width: 25%;">Noisy Mixture</th>
-                    <th style="width: 25%;">Clean Reference</th>
-                    <th style="width: 25%;" class="highlight">Proposed VI-NBFNet</th>
+                    <th>Visual Clue</th>
+                    <th>Noisy Mixture</th>
+                    <th>Clean Reference</th>
+                    <th class="highlight">Proposed VI-NBFNet</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td>
+                    <td data-label="Visual Clue">
                         <div class="video-container">
-                            <video controls muted autoplay loop playsinline>
+                            <video controls muted autoplay loop playsinline preload="auto">
                                 <source src="video/2_test.mp4" type="video/mp4">
                             </video>
                         </div>
-                        
                     </td>
-                    <td>
+                    <td data-label="Noisy Mixture">
                         <img src="img/noisy2.png" class="spec-img" alt="Noisy">
                         <audio controls src="audio/noisy2.wav"></audio>
                     </td>
-                    <td>
+                    <td data-label="Clean Reference">
                         <img src="img/clean2.png" class="spec-img" alt="Clean">
                         <audio controls src="audio/clean2.wav"></audio>
                     </td>
-                    <td class="highlight">
+                    <td data-label="Proposed VI-NBFNet" class="highlight">
                         <img src="img/VI_NBF2.png" class="spec-img" alt="Proposed">
                         <audio controls src="audio/VI_NBF2.wav"></audio>
                     </td>
@@ -205,30 +209,18 @@
         <table class="demo-table">
             <thead>
                 <tr>
-                    <th style="width: 25%;">VI-MSE (BF)</th>
-                    <th style="width: 25%;">VI-SA-BF</th>
-                    <th style="width: 25%;">VI-SSE</th>
-                    <th style="width: 25%;">VI-MSE (BF+PF)</th>
+                    <th>VI-MSE (BF)</th>
+                    <th>VI-SA-BF</th>
+                    <th>VI-SSE</th>
+                    <th>VI-MSE (BF+PF)</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td>
-                        <img src="img/VI_MSE_BF2.png" class="spec-img" alt="VI_MSE_BF">
-                        <audio controls src="audio/VI_MSE_BF2.wav"></audio>
-                    </td>
-                    <td>
-                        <img src="img/VI_SA_BF2.png" class="spec-img" alt="VI_SA_BF">
-                        <audio controls src="audio/VI_SA_BF2.wav"></audio>
-                    </td>
-                    <td>
-                        <img src="img/VI_SSE2.png" class="spec-img" alt="VI_SSE">
-                        <audio controls src="audio/VI_SSE2.wav"></audio>
-                    </td>
-                    <td>
-                        <img src="img/VI_MSE_PF2.png" class="spec-img" alt="VI_MSE_PF">
-                        <audio controls src="audio/VI_MSE_PF2.wav"></audio>
-                    </td>
+                    <td data-label="VI-MSE (BF)"><img src="img/VI_MSE_BF2.png" class="spec-img"><audio controls src="audio/VI_MSE_BF2.wav"></audio></td>
+                    <td data-label="VI-SA-BF"><img src="img/VI_SA_BF2.png" class="spec-img"><audio controls src="audio/VI_SA_BF2.wav"></audio></td>
+                    <td data-label="VI-SSE"><img src="img/VI_SSE2.png" class="spec-img"><audio controls src="audio/VI_SSE2.wav"></audio></td>
+                    <td data-label="VI-MSE (BF+PF)"><img src="img/VI_MSE_PF2.png" class="spec-img"><audio controls src="audio/VI_MSE_PF2.wav"></audio></td>
                 </tr>
             </tbody>
         </table>
@@ -240,7 +232,6 @@
             <thead>
                 <tr>
                     <th>Method</th>
-                   
                     <th>BAK (↑)</th>
                     <th>SIG (↑)</th>
                     <th>OVRL (↑)</th>
@@ -262,7 +253,7 @@
     </div>
 
     <footer class="text-center">
-        <p>© 2026 <strong>Telecom Electroacoustic Audio (TEA) Lab</strong></p>
+        <p>© 2026 <strong>Telecom Electroacoustic Audio Lab (TEAL)</strong></p>
         <p>National Tsing Hua University</p>
     </footer>
 </div>
