@@ -35,7 +35,62 @@
         .metrics-table tr:nth-child(even) { background-color: #f8f9fa; }
         .best-value { font-weight: bold; color: #d9480f; }
 
-        footer { border-top: 1px solid #eee; padding: 30px 0; margin-top: 60px; color: #777; }
+        /* 頁尾樣式優化 */
+        /* 頁尾容器：設為 relative 讓內容可以精確定位 */
+        /* 頁尾樣式優化 */
+        /* 頁尾樣式優化 */
+        footer { 
+            border-top: 1px solid #eee; 
+            padding: 30px 0; 
+            margin-top: 60px; 
+            color: #777; 
+            text-align: center; 
+        }
+
+        .footer-container {
+            display: inline-block; /* 讓容器大小剛好包裹文字 */
+            position: relative;    /* 讓校徽可以相對於文字定位 */
+            padding: 0 60px;       /* 為左右留出校徽的預留空間，確保文字絕對置中 */
+        }
+
+        .footer-text {
+            text-align: center;
+        }
+
+        .footer-text p {
+            margin-bottom: 0;
+            line-height: 1.5;
+            font-size: 0.95rem;
+            white-space: nowrap; /* 避免桌機版文字換行造成對齊跑掉 */
+        }
+
+        .footer-logo {
+            position: absolute;
+            right: 0;             /* 緊貼在文字容器的最右邊 */
+            top: 50%;
+            transform: translateY(-50%); /* 垂直居中對齊兩行文字 */
+            height: 45px;         /* 高度約等於兩行字 */
+            width: auto;
+        }
+
+        /* --- 手機版優化 --- */
+        @media (max-width: 768px) {
+            .footer-container {
+                padding: 0;        /* 移除預留空間 */
+                display: block;    /* 恢復區塊排列 */
+            }
+            .footer-text p {
+                white-space: normal; /* 容許手機版文字換行 */
+            }
+            .footer-logo {
+                position: static;  /* 移除絕對定位 */
+                transform: none;
+                margin: 15px auto 0; /* 改為文字下方置中 */
+                display: block;
+                height: 50px;      /* 手機上稍微放大校徽方便看清 */
+            }
+        }
+        
 
         /* --- 手機版優化：核心代碼 --- */
         @media (max-width: 768px) {
@@ -59,6 +114,15 @@
                 text-transform: uppercase;
             }
             .spec-img, .video-container { max-width: 100%; } /* 手機上讓圖大一點 */
+                .footer-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+            .footer-logo {
+                position: static; /* 手機上取消絕對定位，改為垂直排列 */
+                transform: none;
+                margin-top: 10px;
+            }
         }
     </style>
 </head>
@@ -252,9 +316,14 @@
         </table>
     </div>
 
-    <footer class="text-center">
-        <p>© 2026 <strong>Telecom Electroacoustic Audio (TEA) Lab</strong></p>
-        <p>National Tsing Hua University</p>
+    <footer>
+        <div class="footer-container">
+            <div class="footer-text">
+                <p>© 2026 <strong>Telecom Electroacoustic Audio (TEA) Lab</strong></p>
+                <p>National Tsing Hua University</p>
+            </div>
+            <img src="img/nthu_logo.jpg" alt="NTHU Logo" class="footer-logo">
+        </div>
     </footer>
 </div>
 
